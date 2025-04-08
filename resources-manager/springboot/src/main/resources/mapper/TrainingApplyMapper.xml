@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TrainingApplyMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.TrainingApply">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="training_id" property="trainingId" jdbcType="INTEGER"/>
+        <result column="employee_id" property="employeeId" jdbcType="INTEGER"/>
+        <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="trainingName" property="trainingName" jdbcType="VARCHAR"/>
+        <result column="employeeName" property="employeeName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.entity.TrainingApply" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO training_apply(training_id, employee_id, apply_time, status)
+        VALUES(#{trainingId}, #{employeeId}, #{applyTime}, #{status})
+    </insert>
+
+    <select id="selectByUserTraining" parameterType="com.example.entity.TrainingApply" resultMap="BaseResultMap">
+        SELECT * FROM training_apply
+        WHERE training_id=#{trainingId} AND employee_id=#{employeeId}
+    </select>
+
+    <select id="selectByEmployee" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT ta.*, t.name as trainingName
+        FROM training_apply ta
+                 LEFT JOIN training t ON t.id = ta.training_id
+        WHERE ta.employee_id=#{employeeId}
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT ta.*, e.name as employeeName, t.name as trainingName
+        FROM training_apply ta
+                 LEFT JOIN employee e ON e.id = ta.employee_id
+                 LEFT JOIN training t ON t.id = ta.training_id
+        WHERE ta.id = #{id}
+    </select>
+
+
+    <select id="selectByDepartmentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT ta.*, e.name as employeeName, t.name as trainingName
+        FROM training_apply ta
+                 LEFT JOIN employee e ON e.id = ta.employee_id
+                 LEFT JOIN training t ON t.id = ta.training_id
+        WHERE e.department_id = #{departmentId}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT ta.*, e.name as employeeName, t.name as trainingName
+        FROM training_apply ta
+                 LEFT JOIN employee e ON e.id = ta.employee_id
+                 LEFT JOIN training t ON t.id = ta.training_id
+    </select>
+
+    <update id="updateStatus" parameterType="com.example.entity.TrainingApply">
+        UPDATE training_apply
+        SET status=#{status}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM training_apply WHERE id = #{id}
+    </delete>
+</mapper>

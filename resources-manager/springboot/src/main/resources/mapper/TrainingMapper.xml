@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TrainingMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.Training">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="time" property="time" jdbcType="VARCHAR"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
+        <result column="teacher" property="teacher" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM training
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Training" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO training(name, content, time, location, teacher)
+        VALUES(#{name}, #{content}, #{time}, #{location}, #{teacher})
+    </insert>
+
+    <update id="update" parameterType="com.example.entity.Training">
+        UPDATE training
+        SET name=#{name}, content=#{content}, time=#{time},
+            location=#{location}, teacher=#{teacher}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM training WHERE id=#{id}
+    </delete>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT * FROM training WHERE id=#{id}
+    </select>
+
+    <delete id="batchDelete" parameterType="java.util.List">
+        DELETE FROM training WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
